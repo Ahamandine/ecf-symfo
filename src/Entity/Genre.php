@@ -19,7 +19,7 @@ class Genre
     #[ORM\Column(length: 191)]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     #[ORM\ManyToMany(targetEntity: Livre::class, mappedBy: 'genres')]
@@ -52,7 +52,7 @@ class Genre
         return $this->description;
     }
 
-    public function setDescription(string $description): self
+    public function setDescription(?string $description): self
     {
         $this->description = $description;
 
