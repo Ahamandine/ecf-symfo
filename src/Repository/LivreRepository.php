@@ -2,6 +2,7 @@
 
 namespace App\Repository;
 
+use App\Entity\Auteur;
 use App\Entity\Livre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -39,6 +40,47 @@ class LivreRepository extends ServiceEntityRepository
         }
     }
 
+    public function findByTitre(string $titre): array
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.titre = :titre')
+            ->setParameter('titre', "%{$titre}%")
+            ->orderBy('l.titre', 'ASC')
+            ->getQuery()
+            ->getResult()
+    ;
+
+    }
+    public function findByAuteur(Auteur $auteur): array 
+    {
+        return $this->createQueryBuilder('l')
+            // jointure un livre possède un auteur, et le 'a' fera désormais référence à l'auteur
+            ->join('l.auteur', 'a')
+            ->andWhere('a.id = :id')
+            ->setParameter('id', $auteur->getId())
+            ->orderBy('l.titre', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+
+    }
+
+    public function findByNomGenre(string $nomGenre): array 
+    {
+        return $this->createQueryBuilder('l')
+            // jointure un livre possède un ou des genre, et le 'g' fera désormais référence au genre
+            ->join('l.genres', 'g')
+            ->andWhere('g.nom LIKE :nomGenre')
+            ->setParameter('nomGenre', '%{$nomGenre}%')
+            ->orderBy('l.titre', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+
+    }
+
+    //entity manager accès en écriture.
+    
 //    /**
 //     * @return Livre[] Returns an array of Livre objects
 //     */
